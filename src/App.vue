@@ -94,7 +94,16 @@
         <div class="card">
           <div class="card-body">
             <ul class="list-group">
-              <li class="list-group-item" v-for="domain in domains" v-bind:key="domain">{{domain}}</li>
+              <li class="list-group-item" v-for="domain in domains" v-bind:key="domain">
+                <div class="row">
+                  <div class="col-md">{{domain.name}}</div>
+                  <div class="col-md text-right">
+                    <a class="btn btn-info" target="blank" v-bind:href="domain.link">
+                      <span class="fa fa-shopping-cart"></span>
+                    </a>
+                  </div>
+                </div>
+              </li>
             </ul>
           </div>
         </div>
@@ -114,14 +123,13 @@ export default {
 		sufix: "",
 		prefixes: ["Air", "Jet"],
 		sufixes: ["hub", "mart"],
-		domains: ["Airhub", "Airmart", "Jethub", "Jetmart"]
 	}),
 	methods: {
 		addPrefix(prefix) {
 			if (!this.prefixes.some(val => val == prefix)) {
 				this.prefixes.push(prefix);
 				this.prefix = "";
-				this.generate();
+
 			} else {
 				this.prefix = "";
 			}
@@ -130,30 +138,31 @@ export default {
 			if (!this.sufixes.some(val => val == sufix)) {
 				this.sufixes.push(sufix);
 				this.sufix = "";
-				this.generate();
 			} else {
 				this.sufix = "";
 			}
 		},
 		removePrefix(prefix){
 			this.prefixes.splice(this.prefixes.indexOf(prefix),1);
-			this.generate();
 		},
 		removeSufix(sufix){
 			this.sufixes.splice(this.sufixes.indexOf(sufix),1);
-			this.generate();
 		},
-		generate() {
-			this.domains = [];
+		
+	},
+	computed:{
+		domains() {
+			const domains = [];
 			for (const prefix of this.prefixes) {
 				for (const sufix of this.sufixes) {
-					this.domains.push(prefix + sufix);
+					const name = prefix + sufix;
+					const url = name.toLowerCase();
+					domains.push({name:name,link:`https://checkout.hostgator.com.br/?a=add&sld=${url}&tld=.com&_ga=2.267258118.908109154.1581444100-743799972.1581444100`});
 				}
 			}
+			console.log(domains);
+			return domains;
 		}
-	},
-	created(){
-		this.generate();
 	}
 };
 </script>
